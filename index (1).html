@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Prompt Library — reusable templates for everyday operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F7F8FA; --panel:#FFFFFF; --ink:#1B2433; --muted:#5B6576; --rule:#DDE2EA;
+  --accent:#2F4FB5; --accent-soft:#E6EBFA; --good:#2E7D5B; --bad:#B23A30; --warn:#C08A1E;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif;
+  --sans:"Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161D; --panel:#1A2029; --ink:#E6EAF0; --muted:#9AA3B2; --rule:#2C3440;
+    --accent:#8FA6F2; --accent-soft:#232C44; --good:#5DB58D; --bad:#E0776C; --warn:#DDB35A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161D; --panel:#1A2029; --ink:#E6EAF0; --muted:#9AA3B2; --rule:#2C3440;
+  --accent:#8FA6F2; --accent-soft:#232C44; --good:#5DB58D; --bad:#E0776C; --warn:#DDB35A;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 12px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding:40px 20px 24px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4.4vw,40px);line-height:1.12;margin:0 0 10px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);max-width:70ch}
+h2{font-family:var(--serif);font-weight:600;font-size:24px;margin:0 0 6px}
+h3{font-size:16px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px;max-width:72ch}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.example{margin:22px 0 0;padding:12px 16px;border:1px solid var(--warn);border-left-width:4px;border-radius:8px;background:var(--panel);font-size:14px}
+.example strong{color:var(--warn)}
+.privacy{margin:16px 0 0;padding:12px 16px;border:1px solid var(--accent);border-left-width:4px;border-radius:8px;background:var(--accent-soft);font-size:14px;max-width:none}
+.privacy strong{color:var(--accent)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:28px 0 0;overflow-x:auto}
+.tabs button{font:600 15px var(--sans);border:0;border-bottom:3px solid transparent;background:none;padding:10px 14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabpanel{padding-top:22px}
+button,.btn{font:600 14px var(--sans);border-radius:8px;padding:8px 13px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button.primary{color:#10131a}}
+:root[data-theme="dark"] button.primary{color:#10131a}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+.list{display:grid;gap:8px}
+.card{text-align:left;width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:10px;background:var(--panel);cursor:pointer;font:inherit;color:inherit}
+.card[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.card .cat{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.card .nm{font-weight:600;font-size:15px;margin-top:2px}
+.card .ds{font-size:13px;color:var(--muted);margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:4px 0 14px}
+.meta b{color:var(--ink);font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.cols{grid-template-columns:1fr}}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+label .hint{font-weight:400;color:var(--muted)}
+input,select,textarea{width:100%;font:14px/1.5 var(--sans);padding:8px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+.prompt{font:13px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:14px;max-height:520px;overflow:auto;margin:0}
+.prompt mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.status{font-size:13px;color:var(--muted)}
+.check{list-style:none;padding:0;margin:0}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--rule);font-size:14px}
+.check li:first-child{border-top:0}
+.check input{width:auto;margin-top:4px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;margin-right:6px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .step{color:#10131a}}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.ba{grid-template-columns:1fr}}
+.ba .panel h3{display:flex;align-items:center;gap:8px}
+.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.pill.bad{color:var(--bad)}.pill.good{color:var(--good)}
+.out{font-size:14px;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:12px 14px}
+.out p{margin:0 0 8px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;border-bottom:1px solid var(--rule);padding:7px 8px}
+td{border-bottom:1px solid var(--rule);padding:7px 8px;vertical-align:top}
+td.ns{color:var(--bad);font-weight:600}
+.issues{margin:10px 0 0;padding-left:0;list-style:none;font-size:14px}
+.issues li{padding:5px 0 5px 22px;position:relative}
+.issues.bad li::before{content:"✕";position:absolute;left:2px;color:var(--bad);font-weight:700}
+.issues.good li::before{content:"✓";position:absolute;left:2px;color:var(--good);font-weight:700}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:820px){.quotes{grid-template-columns:1fr}}
+.quote{font-size:13.5px;border:1px dashed var(--rule);border-radius:8px;padding:10px 12px;background:var(--panel)}
+.quote b{display:block;margin-bottom:4px}
+.kb{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.kb .panel p{margin:0;font-size:14px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+@media (max-width:760px){.flow{grid-template-columns:1fr 1fr}}
+.flow div{border-top:3px solid var(--accent);padding-top:8px;font-size:14px}
+.flow b{display:block}
+footer{text-align:center;color:#8C939F;font-family:var(--sans);font-size:11px;padding:30px 0 20px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>An AI prompt library for everyday operations work</h1>
+    <p class="lede">Five reusable templates for common office tasks. Fill in the fields, copy the prompt into ChatGPT or Claude, then run the checklist before using the result. Every template is built to stop the AI from guessing and to leave decisions with the team.</p>
+    <p class="privacy" role="note"><strong>Data privacy.</strong> Use only AI tools approved through the company's governance process. Before pasting any text, mask personal data, customer details and confidential business information, following the company's data privacy rules. If you are unsure whether something can be shared, check with the data owner or IT before using the tool.</p>
+    <p class="example" role="note"><strong>Demo project.</strong> The templates are ready to use. All example inputs and outputs on this page are fictional and contain no real company or customer information.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Sections" id="tabs">
+    <button role="tab" id="tab-lib" aria-controls="p-lib" aria-selected="true" tabindex="0">Templates</button>
+    <button role="tab" id="tab-ba" aria-controls="p-ba" aria-selected="false" tabindex="-1">Before &amp; after</button>
+    <button role="tab" id="tab-kb" aria-controls="p-kb" aria-selected="false" tabindex="-1">How the library works</button>
+  </div>
+
+  <!-- TEMPLATES -->
+  <div class="tabpanel" role="tabpanel" id="p-lib" aria-labelledby="tab-lib">
+    <div class="layout">
+      <div class="list" id="list" aria-label="Templates"></div>
+      <div>
+        <div class="panel">
+          <h2 id="tName"></h2>
+          <p class="sub" id="tPurpose"></p>
+          <div class="meta" id="tMeta"></div>
+          <div class="cols">
+            <div>
+              <h3><span class="step">1</span>Fill in the inputs</h3>
+              <div id="fields"></div>
+              <div class="row"><button type="button" id="loadEx">Load example inputs</button><button type="button" id="clear">Clear</button></div>
+            </div>
+            <div>
+              <h3><span class="step">2</span>Copy the prompt</h3>
+              <pre class="prompt" id="prompt" aria-live="polite"></pre>
+              <div class="row"><button type="button" class="primary" id="copy">Copy prompt</button><span class="status" id="copyStatus"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:16px">
+          <h3><span class="step">3</span>Verify before use</h3>
+          <p class="sub" style="margin-bottom:8px">AI output is a first draft. Tick each check before the result is sent, filed or acted on.</p>
+          <ul class="check" id="checks"></ul>
+          <p class="status" id="checkStatus" style="margin-top:8px"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE & AFTER -->
+  <div class="tabpanel" role="tabpanel" id="p-ba" aria-labelledby="tab-ba" hidden>
+    <h2>Same three quotes, two different prompts</h2>
+    <p class="sub">Three fictional supplier quotes for 120 LED ceiling panels. The first prompt is how most people ask. The second uses the Supplier quotation comparison template. The outputs below are illustrative examples of the typical result of each prompt.</p>
+    <div class="quotes">
+      <div class="quote"><b>Supplier A</b>LED panel 600×600, 40W. 120 × 385,000 = 46,200,000 VND, VAT 8% included. Free delivery in HCMC. Lead time 10 days. Warranty 2 years. 30% deposit, 70% on delivery. Valid 15 days.</div>
+      <div class="quote"><b>Supplier B</b>LED panel 600×600, 36W. 120 × 350,000 = 42,000,000 VND, excluding VAT. Delivery 1,500,000 VND. Lead time 14 days. Warranty 1 year. 50% deposit. Valid 30 days.</div>
+      <div class="quote"><b>Supplier C</b>LED panel 600×600, 40W. 120 × 372,000 = 44,640,000 VND, VAT included. Lead time 7 days. 100% payment on delivery.</div>
+    </div>
+
+    <div class="ba" style="margin-top:18px">
+      <div class="panel">
+        <h3><span class="pill bad">Before</span>Vague prompt</h3>
+        <pre class="prompt" style="max-height:none">Compare these 3 quotes and tell me which is best.</pre>
+        <p class="sub" style="margin:14px 0 6px">Output</p>
+        <div class="out">
+          <p>Supplier B offers the lowest price at 42,000,000 VND, so it is the most cost-effective option. Supplier C is second at 44,640,000 VND and has the fastest lead time. Supplier A is the most expensive at 46,200,000 VND.</p>
+          <p><strong>Recommendation:</strong> choose Supplier B for the best value.</p>
+        </div>
+        <p class="sub" style="margin:14px 0 0">What went wrong</p>
+        <ul class="issues bad">
+          <li>Compared B's price <em>before</em> VAT with A and C <em>after</em> VAT.</li>
+          <li>Ignored B's 1,500,000 VND delivery fee.</li>
+          <li>Missed that B quotes a 36W panel, not 40W, so it is not like-for-like.</li>
+          <li>Did not notice that C gives no warranty, delivery cost or quote validity.</li>
+          <li>Made the purchasing decision itself.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><span class="pill good">After</span>Template prompt</h3>
+        <pre class="prompt" style="max-height:170px">You are helping a procurement coordinator compare supplier quotations for: 120 LED ceiling panels, 600×600, 40W, for the office fit-out.
+…
+2. Mark any value that is missing or unclear as "NOT STATED". Never estimate or fill in a missing value.
+…
+5. Do not choose a supplier; the decision stays with the team.</pre>
+        <p class="sub" style="margin:14px 0 6px">Output</p>
+        <div class="out">
+          <div class="tbl-wrap"><table>
+            <thead><tr><th></th><th>Supplier A</th><th>Supplier B</th><th>Supplier C</th></tr></thead>
+            <tbody>
+              <tr><td>Specification</td><td>40W</td><td>36W</td><td>40W</td></tr>
+              <tr><td>Total as quoted</td><td>46,200,000</td><td>42,000,000</td><td>44,640,000</td></tr>
+              <tr><td>VAT</td><td>Included</td><td>Excluded</td><td>Included</td></tr>
+              <tr><td>Delivery</td><td>Free (HCMC)</td><td>1,500,000</td><td class="ns">NOT STATED</td></tr>
+              <tr><td>Lead time</td><td>10 days</td><td>14 days</td><td>7 days</td></tr>
+              <tr><td>Warranty</td><td>2 years</td><td>1 year</td><td class="ns">NOT STATED</td></tr>
+              <tr><td>Payment</td><td>30% deposit</td><td>50% deposit</td><td>100% on delivery</td></tr>
+              <tr><td>Quote valid</td><td>15 days</td><td>30 days</td><td class="ns">NOT STATED</td></tr>
+            </tbody>
+          </table></div>
+          <p style="margin-top:10px"><strong>Not like-for-like:</strong> B excludes VAT; with 8% VAT and delivery it is about 46,860,000 VND. B also quotes 36W, below the 40W requirement.</p>
+          <p><strong>Questions to send:</strong> B: does 36W meet the requirement? C: warranty, delivery cost and quote validity?</p>
+          <p style="margin:0"><strong>Trade-offs:</strong> C is the lowest like-for-like price, pending its missing terms. A has the most complete terms and the longest warranty. Decision stays with the team.</p>
+        </div>
+        <p class="sub" style="margin:14px 0 0">What improved</p>
+        <ul class="issues good">
+          <li>Prices compared on the same VAT basis, with delivery included.</li>
+          <li>Spec difference (36W vs 40W) flagged.</li>
+          <li>Missing terms marked NOT STATED instead of guessed.</li>
+          <li>Ready-to-send questions for each supplier.</li>
+          <li>Trade-offs laid out; the decision stays with the team.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="tabpanel" role="tabpanel" id="p-kb" aria-labelledby="tab-kb" hidden>
+    <h2>How the library works</h2>
+    <p class="sub">The library is run like a small internal knowledge base: every template has the same structure, an owner and a review date, so staff can trust it and it stays current.</p>
+    <div class="flow">
+      <div><b>1. Pick</b>Choose the template that matches the task.</div>
+      <div><b>2. Fill</b>Complete the input fields. Paste source text as-is.</div>
+      <div><b>3. Run</b>Copy the prompt into ChatGPT or Claude.</div>
+      <div><b>4. Verify</b>Tick the checklist before the result is used.</div>
+    </div>
+    <div class="kb">
+      <div class="panel"><h3>Same structure for every template</h3><p>Purpose, when to use it, input fields, the prompt, a verify checklist and an example. Staff learn one pattern and can use any template.</p></div>
+      <div class="panel"><h3>Built-in guardrails</h3><p>Every prompt tells the AI to use only the text provided, to mark gaps instead of guessing, and to cite sources where it extracts facts. Decisions stay with people.</p></div>
+      <div class="panel"><h3>Owner, version, review date</h3><p>Each template has a named owner and a quarterly review date. When staff report a problem, the owner updates the template and the version number.</p></div>
+      <div class="panel"><h3>Measuring impact</h3><p>In a real rollout: time per task and rework rate before and after, how often each template is used, and issues caught by the checklist.</p></div>
+      <div class="panel"><h3>Data safety</h3><p>Remove personal data, prices under NDA and client names before pasting into a public AI tool, unless the company has approved an enterprise AI tool.</p></div>
+      <div class="panel"><h3>Adding a new template</h3><p>When the same request comes up three or more times, it becomes a candidate. Draft it, test it on two real examples, add a checklist, then publish as version 1.0.</p></div>
+    </div>
+  </div>
+
+  <footer>Created by Kim Giau Nguyen</footer>
+</div>
+
+<script>
+const T = [
+{
+  id:"quote", cat:"Procurement", name:"Supplier quotation comparison",
+  desc:"Turn 2–3 quotes into one comparison table.",
+  purpose:"Compare supplier quotations on a like-for-like basis, flag missing terms and list the questions to send back, without letting the AI choose the supplier.",
+  when:"Before shortlisting suppliers for any purchase with two or more quotes.",
+  fields:[
+    {k:"item", label:"What is being quoted", type:"text", ph:"e.g. 120 LED ceiling panels, 600×600, 40W"},
+    {k:"priority", label:"What matters most", type:"select", options:["Balanced","Lowest total cost","Fastest delivery","Quality and warranty"]},
+    {k:"specs", label:"Required specs or terms", hint:"(optional)", type:"textarea", ph:"e.g. 40W minimum, delivery to site, 2-year warranty"},
+    {k:"quotes", label:"Quotations", hint:"(paste as received, one supplier at a time)", type:"textarea", ph:"Supplier A: …\n\nSupplier B: …"}
+  ],
+  prompt:f=>`You are helping a procurement coordinator compare supplier quotations for: ${f.item}.
+
+Quotations (pasted as received):
+<<<
+${f.quotes}
+>>>
+
+Required specs or terms: ${f.specs || "Not provided"}
+
+Tasks:
+1. Build one comparison table. Rows: specification, unit price, quantity, total as quoted, VAT treatment, delivery cost, lead time, warranty, payment terms, quote validity. Columns: one per supplier. Copy numbers exactly as written, with currency.
+2. Mark any value that is missing or unclear as "NOT STATED". Never estimate or fill in a missing value.
+3. List every difference that makes the quotes not like-for-like (VAT, delivery, units, specification). Where possible, show the adjusted total and how you calculated it.
+4. List the questions to send each supplier to close the gaps.
+5. The priority for this purchase is: ${f.priority}. Summarize the trade-offs against it in 3 bullets. Do not choose a supplier; the decision stays with the team.
+
+Format: the table first, then sections 3 to 5 with short headings.`,
+  checks:["Every price and total matches the original quote.","VAT and currency are treated the same way for every supplier.","Any adjusted total has been recalculated by hand.","Every NOT STATED item has a question sent to the supplier.","The AI did not pick a supplier; the recommendation is the team's own."],
+  ex:{item:"120 LED ceiling panels, 600×600, 40W, for the office fit-out", priority:"Balanced", specs:"40W minimum, delivery to HCMC site, warranty of at least 1 year", quotes:"Supplier A: LED panel 600×600, 40W. 120 × 385,000 = 46,200,000 VND, VAT 8% included. Free delivery in HCMC. Lead time 10 days. Warranty 2 years. 30% deposit, 70% on delivery. Valid 15 days.\n\nSupplier B: LED panel 600×600, 36W. 120 × 350,000 = 42,000,000 VND, excluding VAT. Delivery 1,500,000 VND. Lead time 14 days. Warranty 1 year. 50% deposit. Valid 30 days.\n\nSupplier C: LED panel 600×600, 40W. 120 × 372,000 = 44,640,000 VND, VAT included. Lead time 7 days. 100% payment on delivery."}
+},
+{
+  id:"spec", cat:"Documents", name:"Tender and spec key points",
+  desc:"Pull requirements, dates and risks from a long document.",
+  purpose:"Extract the scope, deadlines, mandatory requirements and risks from a tender, specification or contract, with the source section for every point so it can be checked.",
+  when:"When a long tender, RFQ, specification or contract arrives and the team needs a one-page summary.",
+  fields:[
+    {k:"doctype", label:"Document type", type:"select", options:["Tender / RFQ","Technical specification","Contract","Other document"]},
+    {k:"role", label:"Our role", type:"text", ph:"e.g. supplier bidding for the lighting package"},
+    {k:"focus", label:"Anything to focus on", hint:"(optional)", type:"text", ph:"e.g. submission deadline and penalties"},
+    {k:"text", label:"Document text", hint:"(paste the relevant sections)", type:"textarea", ph:"Paste the document text here"}
+  ],
+  prompt:f=>`Extract the key points from the ${f.doctype.toLowerCase()} below. We are: ${f.role}.
+
+Rules:
+- For every point, give the section, clause or page it came from in [brackets].
+- Use only the text provided. If something is not in the document, write "Not found in document". Do not infer or assume.
+- Keep the wording of numbers, dates and standards exactly as written.
+
+Output:
+1. Scope summary: 3 to 5 bullets.
+2. Key dates: table with item, date, source.
+3. Mandatory requirements and documents to submit: a checklist.
+4. Technical requirements: table with requirement, value or standard, source.
+5. Risks, unclear points or statements that conflict with each other.
+6. Questions to raise with the client before we commit.
+${f.focus ? `\nGive extra attention to: ${f.focus}.\n` : ""}
+Document:
+<<<
+${f.text}
+>>>`,
+  checks:["Open each cited section and confirm the point is really there.","Every date and deadline has been re-read in the original.","\"Not found in document\" items have been checked with a quick search of the file.","Conflicting statements have been raised with the client in writing.","The summary is labelled as a working summary, not a replacement for the document."],
+  ex:{doctype:"Tender / RFQ", role:"supplier bidding for the lighting package", focus:"submission deadline and penalties", text:"1. Scope: Supply and install LED lighting for floors 3 to 5, including emergency lights.\n2. Submission: Bids must be received by 17:00 on 15 October 2026 at the site office. Late bids will not be accepted.\n3. Documents: company registration, 2 similar project references, product datasheets, and a bid bond of 2% of bid value.\n4. Technical: panels 600×600, minimum 40W, CRI ≥ 80, 3-year warranty.\n5. Completion: within 45 days of contract signing. A penalty of 0.1% per day applies for delay, capped at 10%.\n6. Payment: 30% advance against advance-payment guarantee; balance on handover."}
+},
+{
+  id:"email", cat:"Communication", name:"Follow-up email",
+  desc:"A clear, polite follow-up with one ask and a deadline.",
+  purpose:"Draft a short follow-up email with one clear request and a deadline, without inventing facts, attachments or commitments.",
+  when:"Chasing a reply, a document, a decision or a delivery from a client, supplier or colleague.",
+  fields:[
+    {k:"to", label:"Recipient and role", type:"text", ph:"e.g. Mr. Tuan, Sales Manager at Supplier C"},
+    {k:"rel", label:"Relationship", type:"select", options:["Supplier","Client","Internal colleague","Manager"]},
+    {k:"context", label:"What has happened so far", type:"textarea", ph:"e.g. Received their quote on 20 Sept; warranty and delivery cost are missing."},
+    {k:"ask", label:"What you need from them", type:"text", ph:"e.g. Confirm warranty period and delivery cost"},
+    {k:"deadline", label:"Deadline", type:"text", ph:"e.g. Thursday 2 October"},
+    {k:"tone", label:"Tone", type:"select", options:["Friendly","Neutral and professional","Firm"]},
+    {k:"lang", label:"Language", type:"select", options:["English","Vietnamese"]}
+  ],
+  prompt:f=>`Write a follow-up email.
+
+To: ${f.to} (${f.rel.toLowerCase()})
+What has happened so far: ${f.context}
+What I need: ${f.ask}
+Deadline: ${f.deadline}
+Tone: ${f.tone.toLowerCase()}
+Language: ${f.lang}
+
+Rules:
+- Subject line that names the topic and the deadline.
+- Under 150 words. State the request in the first two sentences.
+- Repeat the deadline once near the end.
+- Do not invent names, numbers, dates, attachments or promises that are not listed above. Put anything I must fill in as [BRACKETS].
+
+Give two versions: a standard one and a shorter one.`,
+  checks:["Names, titles, dates and numbers are correct.","Nothing is promised that the team has not agreed.","Every [BRACKET] has been filled in or removed.","Any mentioned attachment is actually attached.","The tone suits the relationship."],
+  ex:{to:"Mr. Tuan, Sales Manager at Supplier C", rel:"Supplier", context:"We received your quotation for 120 LED panels on 20 September. The warranty period, delivery cost and quote validity are not stated.", ask:"Confirm the warranty period, delivery cost to our HCMC site, and how long the quote is valid", deadline:"Thursday 2 October", tone:"Neutral and professional", lang:"English"}
+},
+{
+  id:"meeting", cat:"Meetings", name:"Meeting summary and actions",
+  desc:"Notes into decisions, owners and deadlines.",
+  purpose:"Turn rough meeting notes or a transcript into decisions and an action list with owners and deadlines, using only what was actually agreed.",
+  when:"Right after any meeting that ended with decisions or follow-up tasks.",
+  fields:[
+    {k:"title", label:"Meeting title or purpose", type:"text", ph:"e.g. Weekly site coordination"},
+    {k:"date", label:"Date", type:"text", ph:"e.g. 29 September 2026"},
+    {k:"people", label:"Attendees", hint:"(comma-separated)", type:"text", ph:"e.g. Linh (PM), Hung (Site), Mai (Procurement)"},
+    {k:"notes", label:"Notes or transcript", type:"textarea", ph:"Paste the notes here"}
+  ],
+  prompt:f=>`Summarize these meeting notes.
+
+Meeting: ${f.title}
+Date: ${f.date}
+Attendees: ${f.people}
+
+Output:
+1. Summary: 3 sentences.
+2. Decisions made.
+3. Action items as a table: action, owner, deadline. The owner must be one of the attendees. If no owner or deadline was stated, write "TBC".
+4. Open questions.
+5. Risks or blockers.
+
+Use only what is in the notes. Do not add actions or decisions that nobody agreed to.
+
+Notes:
+<<<
+${f.notes}
+>>>`,
+  checks:["Each owner has confirmed their action.","Every TBC has an owner and date before the summary is sent.","Decisions are worded the way they were agreed.","Nothing from the notes that matters was dropped.","Sent to attendees within 24 hours."],
+  ex:{title:"Weekly site coordination", date:"29 September 2026", people:"Linh (Project Manager), Hung (Site Lead), Mai (Procurement)", notes:"- Lighting delivery for floor 3 slipped, supplier says next Tues\n- agreed to go with 40W panels only, no 36W\n- Mai to chase Supplier C on warranty + delivery cost\n- Hung worried about ceiling grid not ready on floor 4, needs check with contractor\n- next meeting same time next week\n- Linh to update client on floor 3 delay"}
+},
+{
+  id:"sop", cat:"Process", name:"SOP draft from rough notes",
+  desc:"Messy notes into a step-by-step procedure.",
+  purpose:"Turn rough notes about how a task is done into a draft SOP (Standard Operating Procedure) with one action per step and an owner for each step, flagging gaps instead of filling them.",
+  when:"Documenting a process for the first time, or when a process changes.",
+  fields:[
+    {k:"proc", label:"Process name", type:"text", ph:"e.g. Handling a supplier quotation request"},
+    {k:"aud", label:"Who will use this SOP", type:"text", ph:"e.g. new office and procurement staff"},
+    {k:"tools", label:"Tools or systems involved", type:"text", ph:"e.g. Email, Google Sheets, shared drive"},
+    {k:"notes", label:"Rough notes", type:"textarea", ph:"Paste your notes here"}
+  ],
+  prompt:f=>`Turn these rough notes into a draft SOP (Standard Operating Procedure).
+
+Process: ${f.proc}
+Audience: ${f.aud}
+Tools or systems: ${f.tools}
+
+Structure:
+1. Purpose
+2. Scope: what is included and what is not
+3. Roles and owners
+4. Procedure: numbered steps, one action per step, each starting with a verb, with the owner and the tool for that step
+5. Checks and approvals
+6. Common mistakes to avoid
+7. Document control: Version 0.1 DRAFT, Owner [NAME], Next review [DATE]
+
+Write in plain English that a new staff member can follow. Where the notes are missing a step, owner or rule, insert [GAP: what is missing] instead of inventing it.
+
+Notes:
+<<<
+${f.notes}
+>>>`,
+  checks:["Someone has walked through the steps once and confirmed they work.","Every [GAP] has been answered by the process owner.","Owners and approvals match how the team really works.","The process owner has approved the draft.","Published in the knowledge base with a version number and review date."],
+  ex:{proc:"Handling a supplier quotation request", aud:"new office and procurement staff", tools:"Email, Google Sheets, shared drive", notes:"get request from PM w/ item + qty\nsend RFQ to at least 3 suppliers (list in sheet)\nwait 3-5 days, chase if no reply\nput quotes in comparison sheet\nPM + manager decide\nsave everything in project folder"}
+}
+];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let cur = T[0], vals = {};
+
+/* Tabs */
+const TABS = ["lib","ba","kb"];
+function selectTab(n, focus){ TABS.forEach(t => { const on = t === n, b = $("tab-"+t); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("p-"+t).hidden = !on; }); if (focus) $("tab-"+n).focus(); }
+$("tabs").addEventListener("click", e => { const b = e.target.closest('[role="tab"]'); if (b) selectTab(b.id.slice(4)); });
+$("tabs").addEventListener("keydown", e => {
+  const i = TABS.indexOf(document.activeElement.id.slice(4)); if (i < 0) return;
+  let n = null;
+  if (e.key === "ArrowRight") n = (i+1) % TABS.length; else if (e.key === "ArrowLeft") n = (i-1+TABS.length) % TABS.length;
+  if (n !== null) { e.preventDefault(); selectTab(TABS[n], true); }
+});
+
+/* Template list */
+$("list").innerHTML = T.map(t => `<button type="button" class="card" data-id="${t.id}" aria-pressed="false"><div class="cat">${esc(t.cat)}</div><div class="nm">${esc(t.name)}</div><div class="ds">${esc(t.desc)}</div></button>`).join("");
+$("list").addEventListener("click", e => { const b = e.target.closest(".card"); if (b) openTpl(b.dataset.id, true); });
+
+function openTpl(id, withExample){
+  cur = T.find(t => t.id === id);
+  document.querySelectorAll(".card").forEach(c => c.setAttribute("aria-pressed", c.dataset.id === id));
+  $("tName").textContent = cur.name;
+  $("tPurpose").textContent = cur.purpose;
+  $("tMeta").innerHTML = `<span><b>When to use:</b> ${esc(cur.when)}</span><span><b>Owner:</b> AI Operations Coordinator</span><span><b>Version:</b> 1.0</span><span><b>Next review:</b> December 2026</span>`;
+  vals = {};
+  cur.fields.forEach(f => vals[f.k] = f.type === "select" ? f.options[0] : "");
+  if (withExample) Object.assign(vals, cur.ex);
+  renderFields(); renderPrompt(); renderChecks();
+}
+function renderFields(){
+  $("fields").innerHTML = cur.fields.map(f => {
+    const id = "f-" + f.k, lab = `<label for="${id}">${esc(f.label)} ${f.hint ? `<span class="hint">${esc(f.hint)}</span>` : ""}</label>`;
+    if (f.type === "select") return lab + `<select id="${id}" data-k="${f.k}">${f.options.map(o => `<option${o === vals[f.k] ? " selected" : ""}>${esc(o)}</option>`).join("")}</select>`;
+    if (f.type === "textarea") return lab + `<textarea id="${id}" data-k="${f.k}" placeholder="${esc(f.ph)}">${esc(vals[f.k])}</textarea>`;
+    return lab + `<input id="${id}" data-k="${f.k}" type="text" placeholder="${esc(f.ph)}" value="${esc(vals[f.k])}">`;
+  }).join("");
+}
+$("fields").addEventListener("input", e => { const k = e.target.dataset.k; if (!k) return; vals[k] = e.target.value; renderPrompt(); });
+function promptText(markup){
+  const f = {};
+  cur.fields.forEach(x => { const v = String(vals[x.k] ?? "").trim(); f[x.k] = v ? (markup ? "\u0001" + v + "\u0002" : v) : (x.hint && x.hint.includes("optional") ? "" : (markup ? "\u0001[" + x.label + "]\u0002" : "[" + x.label + "]")); });
+  return cur.prompt(f);
+}
+function renderPrompt(){
+  $("prompt").innerHTML = esc(promptText(true)).replace(/\u0001/g, "<mark>").replace(/\u0002/g, "</mark>");
+  $("copyStatus").textContent = "";
+}
+function renderChecks(){
+  $("checks").innerHTML = cur.checks.map((c,i) => `<li><input type="checkbox" id="c${i}"><label for="c${i}" style="margin:0;font-weight:400;font-size:14px">${esc(c)}</label></li>`).join("");
+  updateCheckStatus();
+}
+function updateCheckStatus(){
+  const all = $("checks").querySelectorAll("input"), done = [...all].filter(i => i.checked).length;
+  $("checkStatus").textContent = done === all.length ? "All checks done. The output is ready to use." : `${done} of ${all.length} checks done.`;
+}
+$("checks").addEventListener("change", updateCheckStatus);
+$("loadEx").onclick = () => { Object.assign(vals, cur.ex); renderFields(); renderPrompt(); };
+$("clear").onclick = () => { cur.fields.forEach(f => vals[f.k] = f.type === "select" ? f.options[0] : ""); renderFields(); renderPrompt(); };
+$("copy").onclick = async () => {
+  const text = promptText(false);
+  try { await navigator.clipboard.writeText(text); $("copyStatus").textContent = "Copied. Paste it into ChatGPT or Claude."; }
+  catch (e) {
+    const r = document.createRange(); r.selectNodeContents($("prompt"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    $("copyStatus").textContent = "Press Ctrl+C (or Cmd+C) to copy the selected prompt.";
+  }
+};
+openTpl("quote", true);
+</script>
+</body>
+</html>
